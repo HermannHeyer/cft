@@ -7,7 +7,7 @@
     include 'model/conexion.php';
     $id = $_GET['id'];
 
-    $sentencia = $bd->prepare("DELETE FROM chofer where id = ?;");
+    $sentencia = $bd->prepare("DELETE FROM ciudadanos where id_ciudadano = ?;");
     $resultado = $sentencia->execute([$id]);
 
     if ($resultado === TRUE) {

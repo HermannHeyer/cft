@@ -4,10 +4,11 @@
 <?php
 
 include_once('model/conexion.php');
-$sentencia = $bd->query('select * from chofer');
+$sentencia = $bd->query('select * from ciudadanos');
 $choferes = $sentencia->fetchAll(PDO::FETCH_OBJ);
 //print_r($choferes);
-
+$sentenciados = $bd->query('select * from planes');
+$planes = $sentenciados->fetchAll(PDO::FETCH_OBJ);
 /*
 include_once()
 La sentencia include_once() incluye y evalúa el fichero especificado durante la ejecución
@@ -20,13 +21,90 @@ La sentencia include_once() incluye y evalúa el fichero especificado durante la
 */
 ?>
 
+<?php
+error_reporting(E_ALL); //// Notificar todos los errores de PHP (ver el registro de cambios)
+ini_set('ignore_repeated_errors', TRUE); // always use TRUE
+ini_set('display_errors', FALSE); // Error/Exception display, use FALSE only in production environment or real server. Use TRUE in development environment
+ini_set('log_errors', TRUE); // Error/Exception file logging engine.
+ini_set("error_log", "php-error.log"); //Donde se van a guardar los errores
+error_log("Inicio Proyecto CFT");
+
+
+?>
 <div class="container mt-4">
 
     <div class="row">
 
         <div class="col-md-7">
-            <!-- Inicio Alerta Falta campo-->
+           
+
+
+              <!-- Inicio Alerta Actualizar -->
+              <?php 
+                if(isset($_GET['mensaje']) and $_GET['mensaje'] == 'editar'){
+            ?>
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <strong>Éxito</strong> Cliente Actualizado.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php 
+                }
+            ?>   
+
+
+            <!-- Fin Alerta Error Actualizar -->
+
+                <!-- Inicio Alerta Eliminar -->
+                <?php 
+                if(isset($_GET['mensaje']) and $_GET['mensaje'] == 'eliminado'){
+            ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Éxito</strong> Clienete Eliminado.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php 
+                }
+            ?>   
+
+
+            <!-- Fin Alerta Error Eliminar -->
+         
+
+        </div>
+        <div class="container">
+
+            
+            <!-- Inicio Alerta Error Ingresado-->
+            <?php 
+                if(isset($_GET['mensaje']) and $_GET['mensaje'] == 'error'){
+            ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> El cliente ya existe.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php 
+                }
+            ?>   
+
+
+            <!-- Fin Alerta Error Ingresado-->
+            <!-- Inicio Alerta Ingresado-->
             <?php
+            if (isset($_GET['mensaje']) and ($_GET['mensaje']) == 'registrado') {
+
+
+            ?>
+                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                    <strong>Exito!</strong> Cliente Agregado con éxito!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+            <?php
+            }
+            ?>
+
+     <!-- Inicio Alerta Falta campo-->
+     <?php
             if (isset($_GET['mensaje']) and ($_GET['mensaje']) == 'falta') {
 
 
@@ -44,147 +122,68 @@ La sentencia include_once() incluye y evalúa el fichero especificado durante la
 
             <!-- Fin Alerta -->
 
-            <!-- Inicio Alerta Ingresado-->
-            <?php
-            if (isset($_GET['mensaje']) and ($_GET['mensaje']) == 'registrado') {
-
-
-            ?>
-                <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                    <strong>Exito!</strong> Chofer Agregado con éxito!
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-
-            <?php
-            }
-            ?>
-
-
 
             <!-- Fin Alerta Ingresado-->
 
-            <!-- Inicio Alerta Error Ingresado-->
-            <?php 
-                if(isset($_GET['mensaje']) and $_GET['mensaje'] == 'error'){
-            ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> Vuelve a intentar.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <?php 
-                }
-            ?>   
-
-
-            <!-- Fin Alerta Error Ingresado-->
-
-              <!-- Inicio Alerta Actualizar -->
-              <?php 
-                if(isset($_GET['mensaje']) and $_GET['mensaje'] == 'editar'){
-            ?>
-            <div class="alert alert-primary alert-dismissible fade show" role="alert">
-            <strong>Éxito</strong> Chofer Actualizado.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <?php 
-                }
-            ?>   
-
-
-            <!-- Fin Alerta Error Actualizar -->
-
-                <!-- Inicio Alerta Eliminar -->
-                <?php 
-                if(isset($_GET['mensaje']) and $_GET['mensaje'] == 'eliminado'){
-            ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Éxito</strong> Chofer Eliminado.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <?php 
-                }
-            ?>   
-
-
-            <!-- Fin Alerta Error Eliminar -->
-            <div class="card">
-                <div class="card-header bg-primary text-light">
-                    Lista de Choferes
-                </div>
-                <div class="p-4">
-                    <table class="table aling-middle">
-                        <thead>
-                            <tr>
-                                <th scope="col">id</th>
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Apellido</th>
-                                <th scope="col">R.U.T</th>
-                                <th scope="col">E-mail</th>
-                                <th class="text-center" scope="col" colspan="2">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            foreach ($choferes as $chofer) {
-
-
-                            ?>
-                                <tr>
-                                    <td scope="row"><?php echo $chofer->id; ?></td>
-                                    <td><?php echo $chofer->nombre; ?></td>
-                                    <td><?php echo $chofer->apellido; ?></td>
-                                    <td><?php echo $chofer->rut; ?></td>
-                                    <td><?php echo $chofer->email; ?></td>
-                                    <td class="text-center"><a class="text-success" href="editar.php?id=<?php echo $chofer->id; ?>"><i class="bi bi-pencil-square"></a></i></td>
-                                    <td class="text-center"><a onclick="return confirm('Estas seguro de eliminar?');"  class="text-danger" href="eliminar.php?id=<?php echo $chofer->id; ?>"><i class="bi bi-trash3-fill"></a></i></td>
-                                </tr>
-
-                            <?php
-                            }
-                            ?>
-
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header bg-primary text-light">
-                    Ingresar Datos
-                </div>
-
-                <form action="registrar.php" class="p-4" method="post">
-                    <div class="mb-3">
-                        <label for="Nombre" class="form-label">Nombre:</label>
-                        <input type="text" id="nombre" name="nombre" class="form-control">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-7">
+                                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Crear Cliente</h3></div>
+                                    <div class="card-body">
+                                        <form action="/cft/registrarclienteinicio.php" method="POST">
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <div class="form-floating mb-3 mb-md-0">
+                                                        <input class="form-control" name="nombre" id="nombre" type="text" placeholder="Nombre" />
+                                                        <label for="inputFirstName">Nombre :</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-floating">
+                                                        <input class="form-control" name="apellidos"  id="apellidos" type="text" placeholder="Apellidos" />
+                                                        <label for="inputLastName">Apellido</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input class="form-control" name="email" id="email" type="email" placeholder="name@ejemplo.com" />
+                                                <label for="inputEmail">Email</label>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <div class="form-floating mb-3 mb-md-0">
+                                                        <input class="form-control" name="password"  id="password" type="password" placeholder="Contraseña" />
+                                                        <label for="inputPassword">Contraseña</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-floating mb-3 mb-md-0">
+                                                        <select name="plan" id="plan" class="form-control">
+                                                            <option>Seleccionar Plan:</option>
+                                                            <?php
+                                                            foreach ($planes as $plan):
+                                                                echo '<option value="'.$plan->id_plan.'">'.$plan->nombre.'</option>';
+                                                                endforeach;
+                                                            
+                                                            ?>
+                                                        </select>
+                                                 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 mb-0">
+                                                <div class="d-grid"> <input type="submit"  class="btn btn-primary btn-block" value="Crear Cliente"></div>
+                                            </div>
+                                        </form>
+                                        <div class="mt-4 mb-0">
+                                                <div class="d-grid row"><div class="col"> <p>Si ya tienes una cuenta puedes iniciar sesión <a href="login.php" class="">click aqui</a></p></div></div>
+                                            </div>
+                                    </div>
+                                  
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="Nombre" class="form-label">Apellido:</label>
-                        <input type="text" id="apellido" name="apellido" class="form-control">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="Nombre" class="form-label">R.U.T:</label>
-                        <input type="text" id="rut" name="rut" class="form-control">
-                    </div>
-
-
-                    <div class="mb-3">
-                        <label for="Nombre" class="form-label">E-mail:</label>
-                        <input type="email" id="email" name="email" class="form-control">
-                    </div>
-
-                    <div class="d-grid">
-                        <input type="submit" value="Guardar" class="btn btn-primary">
-                    </div>
-                </form>
-
-            </div>
-
-        </div>
     </div>
 </div>
 
